@@ -8,7 +8,9 @@ class select_drama(select_lesson):
     def capture_key(self):
         f=self.Bhtml.find('form',{'action':re.compile("m_practice.asp?")}) #寻找所有action中带有m_practice.asp?的form
         self.list.append(f.get('action'))
-        if not re.search(r'预约时间未到',f.get_text()):
+        f=f.get_text()
+        print(f)
+        if not re.search(r'预约时间未到',f):
             return True
         else:
             print('无课可选')
