@@ -32,15 +32,19 @@ class internet_Ai(object):
             print(img)
 
 class internet_Ai_EPC(internet_Ai):
-    def capture_pic(self):
-        for img in self.get_html().find_all('img',{'src':re.compile("checkcode.asp?")}): #寻找所有src中带有checkcode.asp?的img
+    def capture_pic(self,i):
+        for img in self.get_html(self.url).find_all('img',{'src':re.compile("checkcode.asp?")}): #寻找所有src中带有checkcode.asp?的img
             print("http://epc.ustc.edu.cn/"+str(img)[10:-3].replace(' ','%'))
-            with open('./image/checkcode.bmp','wb') as f:
+            with open('./image/checkcode'+str(i)+'.bmp','wb') as f:
                 f.write(requests.get("http://epc.ustc.edu.cn/"+str(img)[10:-3]).content) #保存目标地址的图片到image
 
 def main():
-    iAi=internet_Ai_EPC('http://epc.ustc.edu.cn/n_left.asp')
-    iAi.capture_pic()
+    i=0
+    while True:
+        iAi=internet_Ai_EPC('http://epc.ustc.edu.cn/n_left.asp')
+        iAi.capture_pic(i)
+        i+=1
+        time.sleep(2)
 
 if __name__=="__main__":
     main()

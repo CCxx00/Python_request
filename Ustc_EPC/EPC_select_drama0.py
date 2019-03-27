@@ -5,8 +5,17 @@ import threading
 import queue
 
 class select_drama(select_lesson):
+    def capture_key(self):
+        f=self.Bhtml.find('form',{'action':re.compile("m_practice.asp?")}) #寻找所有action中带有m_practice.asp?的form
+        self.list.append(f.get('action'))
+        if not re.search(r'预约时间未到',f.get_text()):
+            return True
+        else:
+            print('无课可选')
+            return False
+
     def creat_thread(self,data):
-        for i in range(2): # 从list中获取地址，创建线程
+        for i in range(1): # 从list中获取地址，创建线程
             url="http://epc.ustc.edu.cn/"+self.list[i]
             t=threading.Thread(target=self.post_html,args=(url,data))
             self.Theard.append(t)
@@ -16,14 +25,8 @@ def check_login(iAi,q):
     while True:
         time.sleep(20)
         if not iAi.judge_login() or not q.empty():
+            q.put(1)
             break
-
-def set_pause_time(h,m,s):
-    pause_time=h*60*60+m*60+s-time.localtime()[3]*60*60-time.localtime()[4]*60-time.localtime()[5]
-    if pause_time<0:
-        pause_time=0
-    print(pause_time/60)
-    return pause_time
 
 def main():
     datas={
@@ -36,13 +39,15 @@ def main():
     t=threading.Thread(target=check_login,args=(iAi,q))
     t.start()
 
-    time.sleep(set_pause_time(13,30,0))
-
-    for i in range(20):
-        iAi.capture_key()
-        iAi.creat_thread(datas)
-        iAi.select_les()
-        print("")
+    while True:
+        if iAi.capture_key():
+            iAi.creat_thread(datas)
+            iAi.select_les()
+            print("")
+            break
+        time.sleep(20)
+        if not q.empty():
+            break
 
     q.put(1)
     time.sleep(20)
