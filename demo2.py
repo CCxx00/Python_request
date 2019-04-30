@@ -1,24 +1,7 @@
-import threading
+a=[10]
 
-class f(object):
-    def __init__(self):
-        self.a=1
+def fun():
+    a[0]=100
 
-    def change_a(self,a):
-        self.a=a
-
-    def print_a(self):
-        print(self.a)
-
-def main():
-    fun=f()
-    t=threading.Thread(target=fun.change_a,args=(22222,))
-    fun.print_a()
-    t.start()
-    fun.print_a()
-    t=threading.Thread(target=fun.change_a,args=(22,))
-    t.start()
-    fun.print_a()
-
-if __name__=='__main__':
-    main()
+fun()
+print(a[0])

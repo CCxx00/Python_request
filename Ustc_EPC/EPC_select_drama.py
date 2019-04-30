@@ -43,6 +43,7 @@ def main():
         iAi.creat_thread(datas)
         iAi.select_les()
         print("")
+        time.sleep(1)
 
     q.put(1)
     time.sleep(20)
